@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel – ArbiterQ</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    background-image: url(mainbg.jpg);
+    background-size: cover;
+    background-attachment: fixed;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    background-color: #232323;
+  }
+
+  .headerMenu {
+    position: fixed;
+    z-index: 10;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 20px;
+    color: #fff;
+    background-color: #69696900;
+    backdrop-filter: blur(2px);
+  }
+
+  .app-name {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0;
+  }
+
+  .header-right-group {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .button-home {
+    background-color: #000000de;
+    color: #fff;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    padding: 20px;
+    margin-top: 80px;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .searchpanelpost {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    padding: 20px;
+    margin-top: 20px;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .panel {
+    background: rgba(45, 45, 45, 0.95);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid #444;
+    color: #eee;
+  }
+
+  .panel h2 {
+    margin-top: 0;
+    color: #1e88e5;
+    border-bottom: 2px solid #1e88e5;
+    padding-bottom: 10px;
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  .form-group label {
+    display: block;
+    color: #acd9ff;
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-size: 14px;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    padding: 10px;
+    background-color: #222;
+    color: #fff;
+    border: 1px solid #555;
+    border-radius: 5px;
+    font-size: 14px;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    outline: none;
+    border-color: #1e88e5;
+    box-shadow: 0 0 5px rgba(30, 136, 229, 0.3);
+  }
+
+  .btn {
+    background-color: #1e88e5;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    width: 100%;
+  }
+
+  .btn:hover {
+    background-color: #1565c0;
+  }
+
+  .btn:disabled {
+    background-color: #666;
+    cursor: not-allowed;
+  }
+
+  .user-list {
+    max-height: 400px;
+    overflow-y: auto;
+  }
+
+  .user-item {
+    background: rgba(30, 30, 30, 0.8);
+    padding: 10px;
+    margin-bottom: 8px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .user-info {
+    flex: 1;
+  }
+
+  .user-name {
+    font-weight: bold;
+    color: #64b5f6;
+    margin-bottom: 2px;
+  }
+
+  .user-email {
+    font-size: 12px;
+    color: #aaa;
+  }
+
+  .user-role {
+    background-color: #1e88e5;
+    color: #fff;
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: bold;
+  }
+
+  .role-select {
+    padding: 5px;
+    background-color: #222;
+    border: 1px solid #555;
+    color: #fff;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-right: 5px;
+  }
+
+  .user-actions {
+    display: flex;
+    gap: 5px;
+  }
+
+  .action-btn {
+    background-color: #d32f2f;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 12px;
+  }
+
+  .action-btn:hover {
+    background-color: #c62828;
+  }
+
+  .action-btn.promote {
+    background-color: #388e3c;
+  }
+
+  .action-btn.promote:hover {
+    background-color: #2e7d32;
+  }
+
+  .message {
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    display: none;
+  }
+
+  .message.success {
+    background-color: #226422;
+    color: #dfffcf;
+    display: block;
+  }
+
+  .message.error {
+    background-color: #8b0000;
+    color: #ffcccc;
+    display: block;
+  }
+
+  .notification-type-group {
+    margin-bottom: 15px;
+    padding: 15px;
+    background: rgba(30, 30, 30, 0.8);
+    border-radius: 5px;
+  }
+
+  .notification-type-group label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+  }
+
+  .notification-type-group input[type="radio"] {
+    cursor: pointer;
+  }
+
+  @media (max-width: 1024px) {
+    main {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 600px) {
+    main {
+      padding: 10px;
+      margin-top: 70px;
+    }
+
+    .panel {
+      padding: 15px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      font-size: 16px;
+    }
+  }
+
+
+  .post-item {
+  background: rgba(30, 30, 30, 0.8);
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border-left: 3px solid #1e88e5;
+}
+
+.post-id-badge {
+  display: inline-block;
+  background: #1e88e5;
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: bold;
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+.post-id-badge:hover {
+  background: #1565c0;
+}
+
+.post-title {
+  font-weight: bold;
+  color: #64b5f6;
+  margin-bottom: 5px;
+  font-size: 16px;
+}
+
+.post-excerpt {
+  color: #ccc;
+  font-size: 13px;
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.post-meta {
+  display: flex;
+  gap: 15px;
+  font-size: 12px;
+  color: #aaa;
+  flex-wrap: wrap;
+}
+
+.post-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.post-actions {
+  margin-top: 10px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.post-action-btn {
+  background-color: #1e88e5;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.post-action-btn:hover {
+  background-color: #1565c0;
+}
+
+.post-action-btn.delete {
+  background-color: #d32f2f;
+}
+
+.post-action-btn.delete:hover {
+  background-color: #c62828;
+}
+
+.copy-success {
+  animation: copyFlash 0.5s ease;
+}
+
+@keyframes copyFlash {
+  0%, 100% { background: #1e88e5; }
+  50% { background: #4caf50; }
+}
+
+
+
+
+
+</style>
+<body>
+  <div class="headerMenu">
+    <h2 class="app-name">ArbiterQ Admin</h2>
+    <div class="header-right-group">
+      <button class="button-home" onclick="location.href='Main.html'">Back to Feed</button>
+      <button class="button-home" onclick="location.href='admin-dashboard.html'">Dashboard</button>
+      <button id="logoutButton" class="button-home">Logout</button>
+    </div>
+  </div>
+
+  <main>
+    <!-- USER MANAGEMENT PANEL -->
+    <div class="panel">
+      <h2><i class="fas fa-users"></i> User Management</h2>
+      <div id="userMessage" class="message"></div>
+
+      <div style="display: flex; gap: 10px;">
+  <input type="text" id="userSearchInput" placeholder="Search for users...">
+  <button id="searchBtn" style="padding: 8px 16px; background: #1e88e5; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">Search</button>
+</div>
+    
+
+      <div class="user-list" id="userList">
+        <div style="text-align: center; color: #aaa;">Loading users...</div>
+      </div>
+    </div>
+
+    <!-- SEND NOTIFICATION PANEL -->
+    <div class="panel">
+      <h2><i class="fas fa-bell"></i> Send Notifications</h2>
+      <div id="notifMessage" class="message"></div>
+
+      <div class="form-group">
+        <label>Notification Title</label>
+        <input type="text" id="notifTitle" placeholder="e.g., System Update" maxlength="100" />
+      </div>
+
+      <div class="form-group">
+        <label>Message</label>
+        <textarea id="notifMessage" placeholder="Enter notification message..." maxlength="500" rows="4"></textarea>
+      </div>
+
+      <div class="notification-type-group">
+        <label>
+          <input type="radio" name="notifType" value="all_users" checked />
+          Send to All Users
+        </label>
+        <label>
+          <input type="radio" name="notifType" value="post_likers" />
+          Send to Post Likers
+        </label>
+        <label>
+          <input type="radio" name="notifType" value="post_author" />
+          Send to Post Author
+        </label>
+      </div>
+
+      <div class="form-group" id="postIdGroup" style="display: none;">
+        <label>Post ID</label>
+        <input type="number" id="postId" placeholder="Enter post ID..." />
+      </div>
+
+      <button class="btn" id="sendNotifBtn">Send Notification</button>
+    
+    
+    
+    </main>
+
+
+
+  <script>
+    // Replace the entire <script> section in admin-panel.html with this
+
+const userEmail = localStorage.getItem('userEmail');
+const userRole = localStorage.getItem('userRole');
+
+if (!userEmail || userRole !== 'Admin') {
+  alert('Access denied. Admin only.');
+  window.location.href = 'Main.html';
+}
+
+let allUsers = [];
+
+async function loadUsers() {
+  try {
+    const response = await fetch(`http://127.0.0.1:5000/api/admin/users?admin_email=${userEmail}`);
+    if (!response.ok) throw new Error('Failed to load users');
+
+    allUsers = await response.json();
+    displayUsers(allUsers);
+  } catch (error) {
+    console.error('Error loading users:', error);
+    document.getElementById('userList').innerHTML = '<div style="color:#f44336;">Failed to load users</div>';
+  }
+}
+
+function displayUsers(users) {
+  const container = document.getElementById('userList');
+  
+  if (users.length === 0) {
+    container.innerHTML = '<div style="text-align: center; color: #aaa; padding: 20px;">No users found</div>';
+    return;
+  }
+
+  container.innerHTML = users.map(user => `
+    <div class="user-item">
+      <div class="user-info">
+        <div class="user-name">${user.username}</div>
+        <div class="user-email">${user.email}</div>
+      </div>
+      <div class="user-role">${user.role}</div>
+      <div class="user-actions">
+        <select class="role-select" onchange="promoteUser(${user.UID}, this.value)">
+          <option value="">Change Role</option>
+          <option value="Student">Student</option>
+          <option value="Mentor">Mentor</option>
+          <option value="Admin">Admin</option>
+        </select>
+      </div>
+    </div>
+  `).join('');
+}
+
+function searchUsers() {
+  const searchInput = document.getElementById('userSearchInput');
+  const searchTerm = searchInput.value.toLowerCase().trim();
+
+  if (!searchTerm) {
+    displayUsers(allUsers);
+    return;
+  }
+
+  const filteredUsers = allUsers.filter(user => {
+    return user.username.toLowerCase().includes(searchTerm) ||
+           user.email.toLowerCase().includes(searchTerm) ||
+           user.role.toLowerCase().includes(searchTerm);
+  });
+
+  displayUsers(filteredUsers);
+}
+
+document.getElementById('searchBtn').addEventListener('click', searchUsers);
+
+document.getElementById('userSearchInput').addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') {
+    searchUsers();
+  }
+});
+
+document.getElementById('userSearchInput').addEventListener('input', (e) => {
+  if (e.target.value === '') {
+    displayUsers(allUsers);
+  }
+});
+
+async function promoteUser(userId, newRole) {
+  if (!newRole) return;
+
+  try {
+    const response = await fetch('http://127.0.0.1:5000/api/admin/promote-user', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        user_id: userId,
+        role: newRole,
+        admin_email: userEmail
+      })
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      showMessage('userMessage', `User promoted to ${newRole}!`, 'success');
+      loadUsers();
+    } else {
+      showMessage('userMessage', data.error || 'Error promoting user', 'error');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    showMessage('userMessage', 'Network error', 'error');
+  }
+}
+
+document.querySelectorAll('input[name="notifType"]').forEach(radio => {
+  radio.addEventListener('change', () => {
+    const postIdGroup = document.getElementById('postIdGroup');
+    const selectedType = document.querySelector('input[name="notifType"]:checked').value;
+    postIdGroup.style.display = selectedType === 'all_users' ? 'none' : 'block';
+  });
+});
+
+document.getElementById('sendNotifBtn').addEventListener('click', async () => {
+  const title = document.getElementById('notifTitle').value.trim();
+  const message = document.getElementById('notifMessage').value.trim();
+  const targetType = document.querySelector('input[name="notifType"]:checked').value;
+  const postId = document.getElementById('postId').value || null;
+
+  if (!title || !message) {
+    showMessage('notifMessage', 'Please fill in all fields', 'error');
+    return;
+  }
+
+  if ((targetType !== 'all_users') && !postId) {
+    showMessage('notifMessage', 'Please enter a post ID', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('sendNotifBtn');
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+
+  try {
+    const response = await fetch('http://127.0.0.1:5000/api/admin/send-notification', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title,
+        message,
+        target_type: targetType,
+        post_id: postId ? parseInt(postId) : null,
+        admin_email: userEmail
+      })
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      showMessage('notifMessage', `Sent to ${data.sent_to_count} users!`, 'success');
+      document.getElementById('notifTitle').value = '';
+      document.getElementById('notifMessage').value = '';
+    } else {
+      showMessage('notifMessage', data.error || 'Error sending notification', 'error');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    showMessage('notifMessage', 'Network error', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Send Notification';
+  }
+});
+
+function showMessage(elementId, text, type) {
+  const element = document.getElementById(elementId);
+  element.textContent = text;
+  element.className = `message ${type}`;
+  setTimeout(() => {
+    element.className = 'message';
+  }, 3000);
+}
+
+loadUsers();
+  
+</script>
+
+
+
+
+  <script src="auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Page - ArbiterQ</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    .background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        object-fit: cover;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    .headerMenu {
+        z-index: 100;
+        position: sticky;
+        top: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 15px 20px;
+        color: #ffffff;
+        background-color: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(10px);
+        flex-wrap: wrap;
+    }
+
+    .app-name {
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    .header-buttons {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .button-home, .button-login, .button-signup, .button-feedback {
+        background-color: #000000de;
+        color: #ffffff;
+        font-size: 15px;
+        font-weight: 500;
+        border: 1px solid #000000;
+        border-radius: 5px;
+        height: 40px;
+        padding: 0 15px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .button-home:hover, .button-login:hover, .button-feedback:hover {
+        background-color: #555555;
+        transform: scale(1.05);
+    }
+
+    .search-container {
+        text-align: center;
+        padding: 40px 20px;
+        margin-top: 20px;
+    }
+
+    h1 {
+        color: #ffffff;
+        font-size: 36px;
+        margin-bottom: 30px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .search-input-group {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        width: 100%;
+        max-width: 600px;
+    }
+
+    input[type="text"] {
+        flex: 1;
+        padding: 15px 20px;
+        border: 2px solid #333;
+        border-radius: 50px;
+        font-size: 16px;
+        background: rgba(255, 255, 255, 0.9);
+        transition: all 0.3s ease;
+    }
+
+    input[type="text"]:focus {
+        outline: none;
+        border-color: #1e88e5;
+        box-shadow: 0 0 10px rgba(30, 136, 229, 0.3);
+    }
+
+    .search {
+        padding: 15px 30px;
+        border-radius: 50px;
+        font-size: 16px;
+        border: none;
+        color: #ffffff;
+        background-color: #1e88e5;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: bold;
+    }
+
+    .search:hover {
+        background-color: #1565c0;
+        transform: scale(1.05);
+    }
+
+    .radio-input {
+        --container_width: 300px;
+        position: relative;
+        display: flex;
+        align-items: center;
+        border-radius: 10px;
+        background-color: #fff;
+        color: #000000;
+        width: var(--container_width);
+        overflow: hidden;
+        border: 2px solid #333;
+    }
+
+    .radio-input input {
+        display: none;
+    }
+
+    .radio-input label {
+        width: 100%;
+        padding: 12px;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1;
+        font-weight: 600;
+        font-size: 14px;
+        transition: color 0.3s ease;
+    }
+
+    .selection {
+        position: absolute;
+        height: 100%;
+        width: calc(var(--container_width) / 2);
+        z-index: 0;
+        left: 0;
+        top: 0;
+        background-color: #1e88e5;
+        transition: transform 0.3s ease;
+    }
+
+    .radio-input label:has(input:checked) {
+        color: #fff;
+    }
+
+    .radio-input label:nth-child(1):has(input:checked) ~ .selection {
+        transform: translateX(0);
+    }
+
+    .radio-input label:nth-child(2):has(input:checked) ~ .selection {
+        transform: translateX(calc(var(--container_width) / 2));
+    }
+
+    .result_area {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+        padding: 40px 20px;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .search_result {
+        position: relative;
+        background-color: rgba(45, 45, 45, 0.39);
+        color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        width: 320px;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .search_result:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    }
+
+    .profileCard {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+    }
+
+    .pfp {
+        position: absolute;
+        top: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        border: 4px solid #2d2d2d;
+        object-fit: cover;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    }
+
+    .info {
+        color: #ffffff;
+        text-align: center;
+        padding: 70px 20px 20px;
+    }
+
+    .info h2 {
+        margin: 10px 0;
+        font-size: 22px;
+    }
+
+    .info p {
+        color: #aaa;
+        font-size: 14px;
+        margin: 5px 0;
+    }
+
+    .view_profile {
+        width: calc(100% - 40px);
+        margin: 0 20px 20px;
+        padding: 12px;
+        border-radius: 50px;
+        font-size: 16px;
+        border: none;
+        color: #ffffff;
+        background-color: #1e88e5;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: bold;
+    }
+
+    .view_profile:hover {
+        background-color: #1565c0;
+        transform: scale(1.02);
+    }
+
+    @media (max-width: 768px) {
+        .headerMenu {
+            padding: 10px 15px;
+        }
+
+        .app-name {
+            font-size: 20px;
+        }
+
+        .header-buttons {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .button-home, .button-login, .button-feedback {
+            flex: 1;
+            min-width: 80px;
+        }
+
+        h1 {
+            font-size: 28px;
+        }
+
+        .search-input-group {
+            flex-direction: column;
+            width: 100%;
+        }
+
+        input[type="text"] {
+            width: 100%;
+        }
+
+        .search {
+            width: 100%;
+        }
+
+        .radio-input {
+            --container_width: 280px;
+        }
+
+        .search_result {
+            width: 100%;
+            max-width: 350px;
+        }
+
+        .result_area {
+            padding: 20px 10px;
+        }
+    }
+
+    #video-wallpaper {
+       position: fixed;
+       top: 0;
+       left: 0;
+       width: 100%;
+       height: 100%;
+       object-fit: cover; 
+       z-index: -1;    
+}
+
+
+
+</style>
+<body>
+    <video autoplay loop muted playsinline id="video-wallpaper">
+    <source src="https://res.cloudinary.com/dccijkwes/video/upload/v1762029375/searchbg_dq4nvi.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+    <div class="headerMenu">
+        <h2 class="app-name">ArbiterQ</h2>
+        <div class="header-buttons">
+            <button class="button-home" onclick="location.href='Main.html'">
+                <i class="fas fa-home"></i> Home
+            </button>
+            <button class="button-login" onclick="location.href='aboutus.html'">
+                <i class="fas fa-info-circle"></i> About
+            </button>
+            <button class="button-feedback" onclick="location.href='feedback.html'">
+                <i class="fas fa-comment"></i> Feedback
+            </button>
+        </div>
+    </div>
+
+
+    
+    <div class="search-container">
+        <h1><i class="fas fa-search"></i> Search</h1>
+        <form>
+            <div class="search-input-group">
+                <input type="text" name="query" placeholder="Search for posts or users..." required>
+                <button class='search' type="submit">
+                    <i class="fas fa-search"></i> Search
+                </button>
+            </div>
+
+            <div class="radio-input">
+                <label>
+                    <input value="posts" name="value-radio" id="value-1" type="radio" checked/>
+                    <span><i class="fas fa-file-alt"></i> Posts</span>
+                </label>
+                <label>
+                    <input value="users" name="value-radio" id="value-2" type="radio"/>
+                    <span><i class="fas fa-users"></i> Users</span>
+                </label>
+                <span class="selection"></span>
+            </div>
+        </form>
+    </div>
+
+    <div class="result_area">
+        <p style="color: white; text-align: center; width: 100%; font-size: 18px;">
+            <i class="fas fa-search"></i> Enter a search term to find posts or users
+        </p>
+    </div>
+
+    <script src="searchpage.js"></script>
+</body>
+</html>

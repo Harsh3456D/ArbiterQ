@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARBITERQ DEVELOPERS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --font-sans: 'Inter', sans-serif;
+            
+            --color-bg-deep: #0a0a0a;
+            --color-bg-primary: #111111;
+            --color-bg-card: #1c1c1c;
+            --color-border: #333333;
+            --color-text: #cccccc;
+            --color-text-heading: #f5f5f5;
+            --color-text-muted: #888888;
+            --color-accent-light: #e0e0e0;
+            --color-accent-stark: #ffffff;
+            --color-accent-role: #b30000;
+            --color-white: #ffffff;
+            --color-dark: #111111;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            color: var(--color-text);
+            background-color: var(--color-bg-deep);
+            background-image: url('https://wallpapercave.com/wp/wp12026618.jpg');
+            background-size: cover;
+            background-position: center center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+        }
+
+        img, picture, video, canvas, svg {
+            display: block;
+            max-width: 100%;
+        }
+
+        input, button, textarea, select {
+            font: inherit;
+        }
+
+        p, h1, h2, h3, h4, h5, h6 {
+            overflow-wrap: break-word;
+        }
+
+        .navbar {
+            background-color: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            border-bottom: 1px solid var(--color-border);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-logo {
+            font-size: 1.5rem;
+            line-height: 2rem;
+            font-weight: 800;
+            background-image: linear-gradient(to right, var(--color-accent-light), var(--color-accent-stark));
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+            .nav-links a {
+                font-weight: 500;
+                color: var(--color-text);
+                transition: color 0.2s ease-in-out;
+            }
+            .nav-links a:hover {
+                color: var(--color-accent-stark);
+            }
+
+        .main-content {
+            padding-top: 80px; 
+        }
+
+        .page-wrapper {
+            max-width: 1700px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem;
+            margin-top: 3rem;
+        }
+        @media (min-width: 768px) {
+            .page-wrapper {
+                padding: 4rem 2rem;
+                margin-top: 3rem;
+            }
+        }
+
+        .hero-section {
+            text-align: left;
+            padding: 3rem 0;
+            margin-bottom: 13rem;
+            transition: color 0.3s ease;
+            mix-blend-mode: exclusion;
+        }
+        .hero-section h1 {
+            font-size: 2.25rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            color: var(--color-white);
+            transition: color 0.3s ease;
+        }
+        .hero-section .subtitle {
+            margin-top: 1rem;
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: var(--color-white);
+            transition: color 0.3s ease;
+        }
+        @media (min-width: 768px) {
+            .hero-section h1 {
+                font-size: 3rem;
+            }
+        }
+        .hero-section .team-name {
+            margin-top: 0.5rem;
+            font-size: 3rem;
+            font-weight: 800;
+        }
+        @media (min-width: 768px) {
+            .hero-section .team-name {
+                font-size: 4rem;
+            }
+        }
+        .hero-section .team-gradient {
+            background-image: linear-gradient(to right, var(--color-white), var(--color-accent-light));
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            transition: background-image 0.3s ease;
+        }
+        .hero-section .description {
+            margin-top: 3rem;
+            font-size: 1.125rem;
+            line-height: 1.75;
+            color: var(--color-white);
+            max-width: 42rem;
+            justify-self: left;
+            transition: color 0.3s ease;
+        }
+
+        .heading-wrapper {
+            text-align: center;
+            margin-bottom: 3rem;
+            transition: color 0.3s ease;
+            mix-blend-mode: exclusion;
+        }
+        
+        .grid-heading {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: var(--color-white);
+            text-align: center;
+            margin-bottom: 0;
+            transition: color 0.3s ease;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(1, minmax(0, 1fr));
+            gap: 2rem;
+        }
+        @media (min-width: 640px) {
+            .card-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+        @media (min-width: 1024px) {
+            .card-grid {
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+            }
+        }
+
+        .profile-card {
+            background-color: var(--color-bg-card);
+            border: 1px solid var(--color-border);
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            transition: all 0.3s ease-in-out;
+        }
+        .profile-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 0 25px -5px rgba(179, 0, 0, 0.25), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .profile-card img {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+        .card-content h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--color-text-heading);
+            margin-bottom: 0.5rem;
+        }
+        .card-content .role {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--color-accent-role);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+        }
+        .card-content ul {
+            padding-left: 1.25rem;
+            list-style-type: disc;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            color: var(--color-text);
+        }
+
+        .thanks-section {
+            margin-top: 5rem;
+            padding-bottom: 3rem;
+        }
+
+        .thanks-box {
+            background-color: var(--color-bg-card);
+            color: var(--color-text);
+            padding: 3rem;
+            border-radius: 1rem;
+            text-align: center;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            max-width: 56rem;
+            margin: 0 auto;
+            border: 1px solid var(--color-border);
+        }
+
+        .thanks-box h2 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--color-accent-stark);
+        }
+
+        .thanks-box p {
+            font-size: 1.125rem;
+            line-height: 1.75;
+            color: var(--color-text-muted);
+        }
+
+        .footer {
+            background-color: var(--color-bg-deep);
+            color: var(--color-text-muted);
+            padding: 3rem 5%;
+            border-top: 1px solid var(--color-border);
+        }
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .footer p {
+            margin-top: 1rem;
+            color: var(--color-text-muted);
+        }
+
+        .footer-links {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+        }
+
+        .footer-links a {
+            color: var(--color-text-muted);
+            transition: color 0.2s ease-in-out;
+        }
+        .footer-links a:hover {
+            color: var(--color-white);
+        }
+
+    </style>
+</head>
+<body>
+    
+    <nav class="navbar">
+        <span class="brand-logo">
+            ArbiterQ
+        </span>
+        <div class="nav-links">
+            <a href="Main.html">Home</a>
+            <a href="feedback.html">Feedback</a>
+            <a href="contact.html">Contact</a>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <main class="page-wrapper">
+
+            <section class="hero-section">
+                <h1>THE DEVELOPERS</h1>
+                <p class="subtitle">Meet the team that brought this project from the shadows.</p><br>
+                <h2 class="team-name">
+                    <span class="team-gradient">"AKATSUKI"</span>
+                </h2>
+                <p class="description">
+                    This project is the result of clandestine effort, countless hours, and a shared vision. Our team, Akatsuki, worked with precision and dedication to bring this concept into reality.
+                </p>
+            </section>
+
+            <section>
+                <div class="heading-wrapper">
+                    <h2 class="grid-heading">Meet the Members</h2>
+                </div>
+                <div class="card-grid">
+
+                    <div class="profile-card">
+                        <img src="Harsh.jpeg" alt="Profile picture of Harsh Dabas">
+                        <div class="card-content">
+                            <h3>HARSH DABAS</h3>
+                            <span class="role">Full-Stack (Backend &amp; DB)</span>
+                            <ul>
+                                <li>Architected the backend systems</li>
+                                <li>Designed and managed the database</li>
+                                <li>Contributed across the full stack</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="profile-card">
+                        <img src="nishant.jpeg" alt="Profile picture of Nishant">
+                        <div class="card-content">
+                            <h3>NISHANT</h3>
+                            <span class="role">Full-Stack (React &amp; UI)</span>
+                            <ul>
+                                <li>Engineered the dynamic UI</li>
+                                <li>Bridged JavaScript with the backend</li>
+                                <li>Handled dynamic data flow</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="profile-card">
+                        <img src="mayank.jpeg" alt="Profile picture of Mayank">
+                        <div class="card-content">
+                            <h3>MAYANK</h3>
+                            <span class="role">Front-End Developer</span>
+                            <ul>
+                                <li>Built core front-end UI components</li>
+                                <li>Developed dynamic components</li>
+                                <li>Conceived theme &amp; presentation</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="profile-card">
+                        <img src="khushi.jpeg" alt="Profile picture of Khushi">
+                        <div class="card-content">
+                            <h3>KHUSHI</h3>
+                            <span class="role">Planner &amp; Researcher</span>
+                            <ul>
+                                <li>Authored the research paper</li>
+                                <li>Wrote the presentation script</li>
+                                <li>Guided project planning</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <section class="thanks-section">
+                <div class="thanks-box">
+                    <h2>Acknowledgements</h2>
+                    <p>
+                        We extend our gratitude to those who assisted from the shadows, providing guidance and support throughout this project's lifecycle.
+                    </p>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <span class="brand-logo">
+                ArbiterQ
+            </span>
+            <p>&copy; <span id="current-year"></span> Akatsuki. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>
+
+

@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard – ArbiterQ</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    background-image: url(mainbg.jpg);
+    background-size: cover;
+    background-attachment: fixed;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    background-color: #232323;
+  }
+
+  .headerMenu {
+    position: fixed;
+    z-index: 10;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 20px;
+    color: #fff;
+    background-color: #69696900;
+    backdrop-filter: blur(2px);
+    flex-wrap: wrap;
+  }
+
+  .app-name {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0;
+    color: #d32f2f;
+  }
+
+  .header-right-group {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .button-home {
+    background-color: #000000de;
+    color: #fff;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  .button-home:hover {
+    background-color: #333;
+  }
+
+  .tab-navigation {
+    display: flex;
+    gap: 10px;
+    margin: 80px 20px 0;
+    flex-wrap: wrap;
+    background: rgba(30, 30, 30, 0.8);
+    padding: 15px;
+    border-radius: 8px;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .tab-btn {
+    background-color: #444;
+    color: #aaa;
+    border: 2px solid #555;
+    padding: 10px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s;
+    font-size: 14px;
+  }
+
+  .tab-btn:hover {
+    background-color: #555;
+  }
+
+  .tab-btn.active {
+    background-color: #d32f2f;
+    color: #fff;
+    border-color: #d32f2f;
+  }
+
+  main {
+    padding: 20px;
+    margin: 0;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .tab-content {
+    display: none;
+  }
+
+  .tab-content.active {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .tab-content.single {
+    display: block;
+  }
+
+  .panel {
+    background: rgba(45, 45, 45, 0.95);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid #444;
+    color: #eee;
+  }
+
+  .panel h3 {
+    margin-top: 0;
+    color: #1e88e5;
+    border-bottom: 2px solid #1e88e5;
+    padding-bottom: 10px;
+    font-size: 18px;
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  .form-group label {
+    display: block;
+    color: #acd9ff;
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-size: 14px;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    padding: 10px;
+    background-color: #222;
+    color: #fff;
+    border: 1px solid #555;
+    border-radius: 5px;
+    font-size: 14px;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    outline: none;
+    border-color: #1e88e5;
+    box-shadow: 0 0 5px rgba(30, 136, 229, 0.3);
+  }
+
+  .btn {
+    background-color: #1e88e5;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    width: 100%;
+    font-size: 14px;
+  }
+
+  .btn:hover {
+    background-color: #1565c0;
+  }
+
+  .btn:disabled {
+    background-color: #666;
+    cursor: not-allowed;
+  }
+
+  .btn.delete {
+    background-color: #d32f2f;
+  }
+
+  .btn.delete:hover {
+    background-color: #c62828;
+  }
+
+  .list-container {
+    max-height: 500px;
+    overflow-y: auto;
+  }
+
+  .item {
+    background: rgba(30, 30, 30, 0.8);
+    padding: 12px;
+    margin-bottom: 8px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .item-info {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .item-name {
+    font-weight: bold;
+    color: #64b5f6;
+    margin-bottom: 3px;
+  }
+
+  .item-detail {
+    font-size: 12px;
+    color: #aaa;
+  }
+
+  .item-badge {
+    background-color: #1e88e5;
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: bold;
+  }
+
+  .item-badge.danger {
+    background-color: #d32f2f;
+  }
+
+  .item-actions {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+  }
+
+  .action-btn {
+    background-color: #1e88e5;
+    color: #fff;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 12px;
+  }
+
+  .action-btn:hover {
+    background-color: #1565c0;
+  }
+
+  .action-btn.delete {
+    background-color: #d32f2f;
+  }
+
+  .action-btn.delete:hover {
+    background-color: #c62828;
+  }
+
+  .role-select {
+    padding: 6px;
+    background-color: #222;
+    border: 1px solid #555;
+    color: #fff;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 12px;
+  }
+
+  .message {
+    padding: 12px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    display: none;
+    font-weight: bold;
+  }
+
+  .message.success {
+    background-color: #226422;
+    color: #dfffcf;
+    display: block;
+  }
+
+  .message.error {
+    background-color: #8b0000;
+    color: #ffcccc;
+    display: block;
+  }
+
+  .notification-type-group {
+    margin-bottom: 15px;
+    padding: 12px;
+    background: rgba(30, 30, 30, 0.8);
+    border-radius: 5px;
+  }
+
+  .notification-type-group label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  .notification-type-group input[type="radio"] {
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .stat-card {
+    background: rgba(30, 136, 229, 0.2);
+    border-left: 4px solid #1e88e5;
+    padding: 15px;
+    border-radius: 5px;
+    text-align: center;
+  }
+
+  .stat-number {
+    font-size: 28px;
+    font-weight: bold;
+    color: #64b5f6;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: #aaa;
+    margin-top: 5px;
+  }
+
+  @media (max-width: 1024px) {
+    .tab-content.active {
+      grid-template-columns: 1fr;
+    }
+
+    .stats {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .tab-navigation {
+      flex-direction: column;
+    }
+
+    .tab-btn {
+      width: 100%;
+    }
+
+    .item {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .item-actions {
+      width: 100%;
+    }
+
+    .action-btn {
+      flex: 1;
+    }
+  }
+</style>
+<body>
+  <div class="headerMenu">
+    <h2 class="app-name"><i class="fas fa-lock"></i> Admin Dashboard</h2>
+    <div class="header-right-group">
+      <button class="button-home" onclick="location.href='Main.html'">Back to Feed</button>
+      <button class="button-home" onclick="location.href='admin-panel.html'">User Panel</button>
+      <button id="logoutButton" class="button-home">Logout</button>
+    </div>
+  </div>
+
+  <div class="tab-navigation">
+    <button class="tab-btn active" onclick="switchTab('users')">
+      <i class="fas fa-users"></i> Users
+    </button>
+    <button class="tab-btn" onclick="switchTab('posts')">
+      <i class="fas fa-file-alt"></i> Posts
+    </button>
+    <button class="tab-btn" onclick="switchTab('notifications')">
+      <i class="fas fa-bell"></i> Send Notifications
+    </button>
+  </div>
+
+  <main>
+    <!-- ========== USERS TAB ========== -->
+    <div id="users" class="tab-content active">
+      <div class="panel">
+        <h3><i class="fas fa-users"></i> User Management</h3>
+        <div id="userMessage" class="message"></div>
+
+        <div class="stats">
+          <div class="stat-card">
+            <div class="stat-number" id="totalUsers">0</div>
+            <div class="stat-label">Total Users</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="adminCount">0</div>
+            <div class="stat-label">Admins</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="mentorCount">0</div>
+            <div class="stat-label">Mentors</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Search Users</label>
+          <input type="text" id="userSearch" placeholder="Search by name or email..." />
+        </div>
+
+        <div class="list-container" id="userList">
+          <div style="text-align: center; color: #aaa; padding: 20px;">Loading users...</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3><i class="fas fa-user-shield"></i> Promote User</h3>
+        <div id="promoteMessage" class="message"></div>
+
+        <div class="form-group">
+          <label>Select User</label>
+          <select id="userSelect">
+            <option value="">Loading users...</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>New Role</label>
+          <select id="roleSelect">
+            <option value="Student">Student</option>
+            <option value="Mentor">Mentor</option>
+            <option value="Admin">Admin</option>
+          </select>
+        </div>
+
+        <button class="btn" onclick="promoteUserManual()">Promote User</button>
+      </div>
+    </div>
+
+    <!-- ========== POSTS TAB ========== -->
+    <div id="posts" class="tab-content single">
+      <div class="panel">
+        <h3><i class="fas fa-file-alt"></i> Manage Posts</h3>
+        <div id="postMessage" class="message"></div>
+
+        <div class="stats">
+          <div class="stat-card">
+            <div class="stat-number" id="totalPosts">0</div>
+            <div class="stat-label">Total Posts</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="recentPosts">0</div>
+            <div class="stat-label">This Month</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Search Posts</label>
+          <input type="text" id="postSearch" placeholder="Search by title..." />
+        </div>
+
+        <div class="list-container" id="postList">
+          <div style="text-align: center; color: #aaa; padding: 20px;">Loading posts...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== NOTIFICATIONS TAB ========== -->
+    <div id="notifications" class="tab-content active">
+      <div class="panel">
+        <h3><i class="fas fa-bell"></i> Send Notifications</h3>
+        <div id="notifMessage" class="message"></div>
+
+        <div class="form-group">
+          <label>Notification Title</label>
+          <input type="text" id="notifTitle" placeholder="e.g., System Update" maxlength="100" />
+        </div>
+
+        <div class="form-group">
+          <label>Message</label>
+          <textarea id="notifMessageText" placeholder="Enter notification message..." maxlength="500" rows="5"></textarea>
+        </div>
+
+        <div class="notification-type-group">
+          <label>
+            <input type="radio" name="notifType" value="all_users" checked />
+            Send to All Users
+          </label>
+          <label>
+            <input type="radio" name="notifType" value="post_likers" />
+            Send to Post Likers
+          </label>
+          <label>
+            <input type="radio" name="notifType" value="post_author" />
+            Send to Post Author
+          </label>
+        </div>
+
+        <div class="form-group" id="postIdGroup" style="display: none;">
+          <label>Post ID</label>
+          <input type="number" id="postId" placeholder="Enter post ID..." />
+        </div>
+
+        <button class="btn" id="sendNotifBtn">Send Notification</button>
+      </div>
+
+      <div class="panel">
+        <h3><i class="fas fa-info-circle"></i> Help</h3>
+        <div style="font-size: 14px; line-height: 1.6; color: #ccc;">
+          <p><strong>Send to All Users:</strong> Notification reaches every user on the platform.</p>
+          <p><strong>Send to Post Likers:</strong> Notifies all users who liked a specific post. Requires Post ID.</p>
+          <p><strong>Send to Post Author:</strong> Notifies the creator of a specific post. Requires Post ID.</p>
+          <p style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #555; color: #aaa;">
+            💡 Use this feature to announce important updates, congratulate contributors, or send system-wide messages.
+          </p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const userEmail = localStorage.getItem('userEmail');
+    const userRole = localStorage.getItem('userRole');
+
+    if (!userEmail || userRole !== 'Admin') {
+      alert('Access denied. Admin only.');
+      window.location.href = 'Main.html';
+    }
+
+    // ========== TAB SWITCHING ==========
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      
+      document.getElementById(tabName).classList.add('active');
+      event.target.closest('.tab-btn').classList.add('active');
+
+      if (tabName === 'posts') loadPosts();
+    }
+
+    // ========== USER MANAGEMENT ==========
+
+    async function loadUsers() {
+      try {
+        const response = await fetch(`http://127.0.0.1:5000/api/admin/users?admin_email=${userEmail}`);
+        if (!response.ok) throw new Error('Failed to load users');
+
+        const users = await response.json();
+        
+        // Update stats
+        document.getElementById('totalUsers').textContent = users.length;
+        document.getElementById('adminCount').textContent = users.filter(u => u.role === 'Admin').length;
+        document.getElementById('mentorCount').textContent = users.filter(u => u.role === 'Mentor').length;
+
+        // Update user list
+        const container = document.getElementById('userList');
+        container.innerHTML = users.map(user => `
+          <div class="item">
+            <div class="item-info">
+              <div class="item-name">${user.username}</div>
+              <div class="item-detail">${user.email}</div>
+            </div>
+            <div class="item-badge ${user.role === 'Admin' ? 'danger' : ''}">${user.role}</div>
+            <div class="item-actions">
+              <button class="action-btn delete" onclick="deleteUser(${user.UID})">
+                <i class="fas fa-trash"></i> Delete
+              </button>
+            </div>
+          </div>
+        `).join('');
+
+        // Update promote dropdown
+        const select = document.getElementById('userSelect');
+        select.innerHTML = '<option value="">Select a user...</option>' + 
+          users.map(user => `<option value="${user.UID}">${user.username} (${user.role})</option>`).join('');
+
+      } catch (error) {
+        console.error('Error loading users:', error);
+        document.getElementById('userList').innerHTML = '<div style="color:#f44336;">Failed to load users</div>';
+      }
+    }
+
+    async function promoteUserManual() {
+      const userId = document.getElementById('userSelect').value;
+      const newRole = document.getElementById('roleSelect').value;
+
+      if (!userId) {
+        showMessage('promoteMessage', 'Please select a user', 'error');
+        return;
+      }
+
+      try {
+        const response = await fetch('http://127.0.0.1:5000/api/admin/promote-user', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            user_id: parseInt(userId),
+            role: newRole,
+            admin_email: userEmail
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          showMessage('promoteMessage', `User promoted to ${newRole}!`, 'success');
+          loadUsers();
+          document.getElementById('userSelect').value = '';
+        } else {
+          showMessage('promoteMessage', data.error || 'Error promoting user', 'error');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        showMessage('promoteMessage', 'Network error', 'error');
+      }
+    }
+
+    async function deleteUser(userId) {
+      if (!confirm('Are you sure? This will delete the user and all their data.')) return;
+
+      try {
+        const response = await fetch(`http://127.0.0.1:5000/api/admin/delete-user/${userId}`, {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ admin_email: userEmail })
+        });
+
+        if (response.ok) {
+          showMessage('userMessage', 'User deleted successfully', 'success');
+          loadUsers();
+        } else {
+          showMessage('userMessage', 'Error deleting user', 'error');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        showMessage('userMessage', 'Network error', 'error');
+      }
+    }
+
+    // ========== POST MANAGEMENT ==========
+
+    async function loadPosts() {
+      try {
+        const response = await fetch('http://127.0.0.1:5000/api/posts');
+        if (!response.ok) throw new Error('Failed to load posts');
+
+        const posts = await response.json();
+        const thisMonth = posts.filter(p => new Date(p.created_at).getMonth() === new Date().getMonth()).length;
+
+        document.getElementById('totalPosts').textContent = posts.length;
+        document.getElementById('recentPosts').textContent = thisMonth;
+
+        const container = document.getElementById('postList');
+        container.innerHTML = posts.map(post => `
+          <div class="item">
+            <div class="item-info">
+              <div class="item-name">${post.topic}</div>
+              <div class="item-detail">By ${post.username} • ${new Date(post.created_at).toLocaleDateString()}</div>
+              <div class="item-detail" style="margin-top: 5px;">${post.message.substring(0, 100)}...</div>
+            </div>
+            <div class="item-actions">
+              <button class="action-btn delete" onclick="deletePost(${post.id})">
+                <i class="fas fa-trash"></i> Delete
+              </button>
+            </div>
+          </div>
+        `).join('');
+
+      } catch (error) {
+        console.error('Error loading posts:', error);
+      }
+    }
+
+    async function deletePost(postId) {
+      if (!confirm('Delete this post? This cannot be undone.')) return;
+
+      try {
+        const response = await fetch(`http://127.0.0.1:5000/api/admin/delete-post/${postId}`, {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ admin_email: userEmail })
+        });
+
+        if (response.ok) {
+          showMessage('postMessage', 'Post deleted', 'success');
+          loadPosts();
+        } else {
+          showMessage('postMessage', 'Error deleting post', 'error');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        showMessage('postMessage', 'Network error', 'error');
+      }
+    }
+
+    // ========== NOTIFICATIONS ==========
+
+    document.querySelectorAll('input[name="notifType"]').forEach(radio => {
+      radio.addEventListener('change', () => {
+        const postIdGroup = document.getElementById('postIdGroup');
+        const selectedType = document.querySelector('input[name="notifType"]:checked').value;
+        postIdGroup.style.display = selectedType === 'all_users' ? 'none' : 'block';
+      });
+    });
+
+    document.getElementById('sendNotifBtn').addEventListener('click', async () => {
+      const title = document.getElementById('notifTitle').value.trim();
+      const message = document.getElementById('notifMessageText').value.trim();
+      const targetType = document.querySelector('input[name="notifType"]:checked').value;
+      const postId = document.getElementById('postId').value || null;
+
+      if (!title || !message) {
+        showMessage('notifMessage', 'Please fill in all fields', 'error');
+        return;
+      }
+
+      if ((targetType !== 'all_users') && !postId) {
+        showMessage('notifMessage', 'Please enter a post ID', 'error');
+        return;
+      }
+
+      const btn = document.getElementById('sendNotifBtn');
+      btn.disabled = true;
+      btn.textContent = 'Sending...';
+
+      try {
+        const response = await fetch('http://127.0.0.1:5000/api/admin/send-notification', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            title,
+            message,
+            target_type: targetType,
+            post_id: postId ? parseInt(postId) : null,
+            admin_email: userEmail
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          showMessage('notifMessage', `Sent to ${data.sent_to_count} users!`, 'success');
+          document.getElementById('notifTitle').value = '';
+          document.getElementById('notifMessageText').value = '';
+        } else {
+          showMessage('notifMessage', data.error || 'Error sending notification', 'error');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        showMessage('notifMessage', 'Network error', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Send Notification';
+      }
+    });
+
+    function showMessage(elementId, text, type) {
+      const element = document.getElementById(elementId);
+      element.textContent = text;
+      element.className = `message ${type}`;
+      setTimeout(() => {
+        element.className = 'message';
+      }, 3000);
+    }
+
+    // Load on page load
+    loadUsers();
+  </script>
+
+  <script src="auth.js"></script>
+</body>
+</html>

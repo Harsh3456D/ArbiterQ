@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Login – ArbiterQ</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    background-image: url(mainbg.jpg);
+    background-size: cover;
+    background-attachment: fixed;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    background-color: #232323;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .login-container {
+    background: rgba(45, 45, 45, 0.98);
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    max-width: 400px;
+    width: 90%;
+    border: 2px solid #d32f2f;
+    color: #eee;
+  }
+
+  .login-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .login-header i {
+    font-size: 48px;
+    color: #d32f2f;
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  .login-header h1 {
+    margin: 0;
+    font-size: 28px;
+    color: #1e88e5;
+  }
+
+  .login-header p {
+    color: #aaa;
+    font-size: 14px;
+    margin: 10px 0 0 0;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-group label {
+    display: block;
+    color: #acd9ff;
+    font-weight: bold;
+    margin-bottom: 8px;
+    font-size: 14px;
+  }
+
+  .form-group input {
+    width: 100%;
+    padding: 12px;
+    background-color: #222;
+    color: #fff;
+    border: 1px solid #555;
+    border-radius: 5px;
+    font-size: 14px;
+  }
+
+  .form-group input:focus {
+    outline: none;
+    border-color: #d32f2f;
+    box-shadow: 0 0 5px rgba(211, 47, 47, 0.3);
+  }
+
+  .login-btn {
+    width: 100%;
+    background-color: #d32f2f;
+    color: #fff;
+    border: none;
+    padding: 12px;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  .login-btn:hover {
+    background-color: #c62828;
+  }
+
+  .login-btn:disabled {
+    background-color: #666;
+    cursor: not-allowed;
+  }
+
+  .message {
+    padding: 12px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    display: none;
+    font-size: 14px;
+  }
+
+  .message.error {
+    background-color: #8b0000;
+    color: #ffcccc;
+    display: block;
+    border-left: 4px solid #d32f2f;
+  }
+
+  .message.success {
+    background-color: #226422;
+    color: #dfffcf;
+    display: block;
+    border-left: 4px solid #388e3c;
+  }
+
+  .back-link {
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  .back-link a {
+    color: #1e88e5;
+    text-decoration: none;
+    font-size: 14px;
+  }
+
+  .back-link a:hover {
+    text-decoration: underline;
+  }
+
+  .warning {
+    background-color: rgba(255, 152, 0, 0.2);
+    border-left: 4px solid #ff9800;
+    padding: 12px;
+    border-radius: 5px;
+    font-size: 13px;
+    color: #ffb74d;
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 600px) {
+    .login-container {
+      padding: 30px 20px;
+    }
+
+    .login-header h1 {
+      font-size: 24px;
+    }
+
+    .login-header i {
+      font-size: 40px;
+    }
+  }
+</style>
+<body>
+  <div class="login-container">
+    <div class="login-header">
+      <i class="fas fa-lock"></i>
+      <h1>Admin Panel</h1>
+      <p>Restricted Access</p>
+    </div>
+
+    <div id="message" class="message"></div>
+
+    <div class="warning">
+      <i class="fas fa-exclamation-triangle"></i> Only administrators can access this area. Unauthorized access attempts are logged.
+    </div>
+
+    <form id="adminLoginForm">
+      <div class="form-group">
+        <label for="username">
+          <i class="fas fa-user"></i> Username
+        </label>
+        <input type="text" id="username" name="username" placeholder="Enter your username" required autofocus />
+      </div>
+
+      <div class="form-group">
+        <label for="password">
+          <i class="fas fa-lock"></i> Password
+        </label>
+        <input type="password" id="password" name="password" placeholder="Enter your password" required />
+      </div>
+
+      <button type="submit" class="login-btn">
+        <i class="fas fa-sign-in-alt"></i> Access Admin Panel
+      </button>
+    </form>
+
+    <div class="back-link">
+      <a href="Main.html">← Back to Main</a>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('adminLoginForm');
+    const messageDiv = document.getElementById('message');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+
+      if (!username || !password) {
+        showMessage('Please enter both username and password', 'error');
+        return;
+      }
+
+      const btn = form.querySelector('.login-btn');
+      btn.disabled = true;
+      btn.textContent = 'Verifying...';
+
+      try {
+        // First, sign in using the existing login endpoint
+        const signinResponse = await fetch('http://127.0.0.1:5000/api/signin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: username,  // Username might be email
+            password: password
+          })
+        });
+
+        if (!signinResponse.ok) {
+          // Try with username as email (domain handling)
+          const altSigninResponse = await fetch('http://127.0.0.1:5000/api/admin/verify-admin', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              username: username,
+              password: password
+            })
+          });
+
+          if (!altSigninResponse.ok) {
+            showMessage('Invalid credentials', 'error');
+            btn.disabled = false;
+            btn.textContent = 'Access Admin Panel';
+            return;
+          }
+
+          const data = await altSigninResponse.json();
+          
+          if (data.user.role !== 'Admin') {
+            showMessage('Access denied. Admin privileges required.', 'error');
+            btn.disabled = false;
+            btn.textContent = 'Access Admin Panel';
+            return;
+          }
+
+          // Store admin session
+          localStorage.setItem('userEmail', data.user.email);
+          localStorage.setItem('userRole', data.user.role);
+          localStorage.setItem('userName', data.user.username);
+
+          showMessage('Access granted. Redirecting...', 'success');
+          setTimeout(() => {
+            window.location.href = 'admin-dashboard.html';
+          }, 1500);
+          return;
+        }
+
+        const data = await signinResponse.json();
+
+        // Check if user is admin
+        if (data.user.role !== 'Admin') {
+          showMessage('Access denied. Admin privileges required.', 'error');
+          btn.disabled = false;
+          btn.textContent = 'Access Admin Panel';
+          return;
+        }
+
+        // Store admin session
+        localStorage.setItem('userEmail', data.user.email);
+        localStorage.setItem('userRole', data.user.role);
+        localStorage.setItem('userName', data.user.username);
+
+        showMessage('Access granted. Redirecting...', 'success');
+        setTimeout(() => {
+          window.location.href = 'admin-dashboard.html';
+        }, 1500);
+
+      } catch (error) {
+        console.error('Error:', error);
+        showMessage('Network error. Please try again.', 'error');
+        btn.disabled = false;
+        btn.textContent = 'Access Admin Panel';
+      }
+    });
+
+    function showMessage(text, type) {
+      messageDiv.textContent = text;
+      messageDiv.className = `message ${type}`;
+    }
+  </script>
+</body>
+</html>

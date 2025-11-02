@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ArbiterQ – For You</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    background-size: cover;
+    background-attachment: fixed;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+  }
+
+  .headerMenu {
+    position: fixed;
+    z-index: 10;
+    top: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 20px;
+    font-size: 14px;
+    color: #ffffff;
+    background-color: #69696900;
+    backdrop-filter: blur(2px);
+    flex-wrap: wrap;
+  }
+
+  .app-name {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+    flex-shrink: 0;
+  }
+
+  .header-right-group {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+  }
+
+  #userInfo {
+    display: none;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+  }
+
+  #welcomeMessage {
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .button-home,
+  .button-login,
+  .button-signup,
+  #logoutButton {
+    margin: 0;
+    background-color: #000000de;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 500;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    height: 40px;
+    padding: 0 15px;
+    cursor: pointer;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .headtext {
+    margin: 0;
+    flex-shrink: 0;
+  }
+
+  .mobile-menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 5px;
+  }
+
+  @media (max-width: 768px) {
+    .headerMenu {
+      padding: 10px 15px;
+      gap: 10px;
+    }
+
+    .app-name {
+      font-size: 20px;
+    }
+
+    .mobile-menu-toggle {
+      display: block;
+      order: 3;
+    }
+
+    .header-right-group {
+      display: none;
+      width: 100%;
+      order: 4;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+      margin-top: 10px;
+      background-color: rgba(0, 0, 0, 0.8);
+      padding: 15px;
+      border-radius: 8px;
+    }
+
+    .header-right-group.active {
+      display: flex;
+    }
+
+    .button-home,
+    .button-login,
+    .button-signup,
+    #logoutButton {
+      width: 100%;
+      height: 40px;
+      padding: 0 15px;
+      font-size: 14px;
+    }
+  }
+
+  .main-content {
+    width: 100%;
+    padding: 20px;
+  }
+
+  .query-feed {
+    width: 90vw;
+    max-width: 1200px;
+    margin: 100px auto;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  @media (max-width: 768px) {
+    .query-feed {
+      grid-template-columns: 1fr;
+      width: 95vw;
+      margin: 120px auto 100px;
+      gap: 15px;
+    }
+
+    .main-content {
+      padding: 10px;
+    }
+  }
+
+  .query-card {
+    background-color: #2d2d2dce;
+    border-radius: 8px;
+    border: 1px solid #444;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    color: #eee;
+    backdrop-filter: blur(5px);
+  }
+
+  .attachment-button {
+    background-color: #444;
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 10px 15px 0 15px;
+    display: block;
+    width: calc(100% - 30px);
+    text-align: center;
+    font-size: 14px;
+    text-decoration: none;
+  }
+
+  .attachment-button:hover {
+    background-color: #555;
+  }
+
+  .post-content {
+    padding: 15px;
+  }
+
+  .post-question {
+    margin-top: 0;
+    color: #fff;
+    font-size: 18px;
+  }
+
+  .post-description {
+    font-size: 14px;
+    color: #ccc;
+    line-height: 1.5;
+  }
+
+  .post-info {
+    font-size: 12px;
+    color: #aaa;
+    margin-bottom: 15px;
+  }
+
+  .interaction-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 15px;
+    border-top: 1px solid #444;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 768px) {
+    .interaction-row {
+      gap: 15px;
+      padding: 10px;
+    }
+
+    .post-question {
+      font-size: 16px;
+    }
+
+    .post-content {
+      padding: 12px;
+    }
+  }
+
+  .like-button {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .like-button .like {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+  }
+
+  .like-button .like-icon {
+    width: 24px;
+    height: 24px;
+    stroke: #aaa;
+    fill: none;
+    transition: all 0.2s;
+  }
+
+  .like-button .like-text {
+    margin-left: 5px;
+    color: #aaa;
+  }
+
+  .like-button input[type="checkbox"] {
+    display: none;
+  }
+
+  .like-button input:checked + .like .like-icon {
+    fill: #ff4d4d;
+    stroke: #ff4d4d;
+  }
+
+  .like-button .like-count {
+    margin-left: 8px;
+    color: #aaa;
+  }
+
+  .like-button .two {
+    display: none;
+  }
+
+  .like-button input:checked ~ .one {
+    display: none;
+  }
+
+  .like-button input:checked ~ .two {
+    display: block;
+  }
+
+  @media (max-width: 768px) {
+    .like-button .like-text {
+      display: none;
+    }
+
+    .like-button .like-icon {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  .comment-toggle {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .comment-btn {
+    cursor: pointer;
+    color: #aaa;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .comment-count {
+    font-size: 14px;
+  }
+
+  .comment-section {
+    display: none;
+    padding: 10px;
+    background: #222;
+    border-radius: 4px;
+    margin-top: 10px;
+    flex-direction: column;
+    gap: 8px;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 250px;
+    z-index: 5;
+  }
+
+  @media (max-width: 768px) {
+    .comment-section {
+      position: fixed;
+      top: auto;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      min-width: 100%;
+      margin: 0;
+      border-radius: 12px 12px 0 0;
+      padding: 15px;
+      max-height: 50vh;
+      overflow-y: auto;
+    }
+  }
+
+  .comment-toggle input:checked ~ .comment-section {
+    display: flex;
+  }
+
+  .comment-section input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #555;
+    border-radius: 4px;
+    background-color: #333;
+    color: #eee;
+  }
+
+  .comment-section ul {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 5px;
+    max-height: 150px;
+    overflow-y: auto;
+    background-color: #333;
+    border-radius: 4px;
+    padding: 8px;
+  }
+
+  .comment-section li {
+    font-size: 12px;
+    padding: 5px 0;
+    border-bottom: 1px solid #444;
+    color: #ccc;
+  }
+
+  .comment-section li:last-child {
+    border-bottom: none;
+  }
+
+  .create-post-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    background-color: #ff0000;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    text-decoration: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    z-index: 100;
+    cursor: pointer;
+    border: none;
+  }
+
+  .create-post-btn:hover {
+    background-color: #f12b08;
+    transform: scale(1.05);
+  }
+
+  @media (max-width: 768px) {
+    .create-post-btn {
+      width: 50px;
+      height: 50px;
+      font-size: 20px;
+      bottom: 20px;
+      right: 20px;
+    }
+  }
+
+  .admin-only-feature {
+    display: none;
+  }
+
+  .assign-mentor-section {
+    padding: 10px 15px;
+    border-top: 1px solid #444;
+    background-color: #2a2a2a;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+  }
+
+  @media (max-width: 768px) {
+    .assign-mentor-section {
+      flex-direction: column;
+      align-items: stretch;
+      padding: 10px;
+    }
+  }
+
+  .assign-mentor-section label {
+    color: #aaa;
+    font-size: 14px;
+    font-weight: bold;
+    flex-shrink: 0;
+  }
+
+  .mentor-select {
+    flex-grow: 1;
+    padding: 8px;
+    background-color: #333;
+    color: #eee;
+    border: 1px solid #555;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  .mentor-select:focus {
+    outline: none;
+    border-color: #ff0000;
+  }
+
+  .mentor-select option {
+    background-color: #333;
+    color: #eee;
+  }
+
+  .post-btn {
+    color: #1e90ff;
+    text-decoration: none;
+    padding: 8px 15px;
+    background-color: #ff0000;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  .post-btn:hover {
+    background-color: #b30000;
+  }
+
+  #logoutButton:hover {
+    background-color: #a83232;
+    border-color: #a83232;
+  }
+
+  .menu-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9;
+  }
+
+  .menu-overlay.active {
+    display: block;
+  }
+
+  /* CREATE POST MODAL STYLES */
+  #createPostModal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 999;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #createPostModal.active {
+    display: flex;
+  }
+
+  #createPostForm {
+    background: #2d2d2d;
+    padding: 30px;
+    border-radius: 10px;
+    max-width: 500px;
+    width: 90%;
+    color: #eee;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  #createPostForm h2 {
+    margin-top: 0;
+    color: #e51e1e;
+    text-align: center;
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  .form-group label {
+    display: block;
+    color: #ffacac;
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-size: 14px;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    width: 100%;
+    padding: 10px;
+    background: #222;
+    color: #fff;
+    border: 1px solid #555;
+    border-radius: 5px;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+  }
+
+  .form-group textarea {
+    resize: none;
+    min-height: 120px;
+  }
+
+  .form-group input:focus,
+  .form-group textarea:focus {
+    outline: none;
+    border-color: #ff0000;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+  }
+
+  .form-actions button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+  }
+
+  .form-actions button[type="submit"] {
+    background: #ff0000;
+    color: #fff;
+  }
+
+  .form-actions button[type="submit"]:hover {
+    background: #b30000;
+  }
+
+  .form-actions button[type="button"] {
+    background: #444;
+    color: #fff;
+    border: 1px solid #666;
+  }
+
+  .form-actions button[type="button"]:hover {
+    background: #555;
+  }
+
+  @media (max-width: 600px) {
+    #createPostForm {
+      padding: 20px;
+    }
+
+    .form-actions {
+      flex-direction: column;
+    }
+
+    .form-actions button {
+      width: 100%;
+    }
+  }
+
+  .header-profile-pic {
+  position: relative;
+  right: 20vw;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid #e51e1e;
+  object-fit: cover;
+  transition: transform 0.2s;
+}
+
+.header-profile-pic:hover {
+  transform: scale(1.1);
+}
+
+#video-wallpaper {
+       position: fixed;
+       top: 0;
+       left: 0;
+       width: 100%;
+       height: 100%;
+       object-fit: cover; 
+       z-index: -1;    
+}
+
+
+
+
+</style>
+<body>
+  <video autoplay loop muted playsinline id="video-wallpaper">
+    <source src="https://res.cloudinary.com/dccijkwes/video/upload/v1762029357/foryoubackground_ian0iu.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  
+  <div class="menu-overlay" id="menuOverlay"></div>
+
+  <div class="headerMenu">
+    <h2 class="app-name">ArbiterQ</h2>
+
+    
+
+    <img id="headerProfilePic" src="https://via.placeholder.com/40" alt="Profile" class="header-profile-pic" title="Click to view profile">
+
+    <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+      <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="header-right-group" id="headerRightGroup">
+      <h3 class="headtext">For you</h3>
+      <button class="button-home" onclick="location.href='index.html'">
+        Home
+      </button>
+      <button class="button-login" onclick="location.href='aboutus.html'">
+        About us
+      </button>
+      <button class="button-login" onclick="location.href='searchPage.html'">
+        Search 
+      </button>
+
+      <div id="userInfo" style="display: none; align-items: center; gap: 15px;">
+        <span id="welcomeMessage"></span>
+        <button onclick="window.location.href='profile.html'" class="button-home">My Profile</button>
+        <button onclick="window.location.href='notifications.html'" class="button-home">My Notification</button>
+        <button id="logoutButton" class="button-login">Logout</button>
+      </div>
+
+      <div id="guestInfo" style="display: flex; align-items: center; gap: 15px;">
+        <button class="button-login" onclick="location.href='login.html'">Login</button>
+        <button class="button-signup" onclick="location.href='signup.html'">Sign Up</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CREATE POST MODAL -->
+  <div id="createPostModal">
+    <form id="createPostForm">
+      <h2><i class="fas fa-pen"></i> Create New Post</h2>
+
+      <div class="form-group">
+        <label for="topic">Topic</label>
+        <input type="text" id="topic" name="topic" required placeholder="Enter post topic" maxlength="128" />
+      </div>
+
+      <div class="form-group">
+        <label for="message">Message</label>
+        <textarea id="message" name="message" required placeholder="Describe your query in detail..." maxlength="2000"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="attachment">Attachment (Optional)</label>
+        <input type="file" id="attachment" name="attachment" />
+      </div>
+
+      <div class="form-actions">
+        <button type="submit"><i class="fas fa-paper-plane"></i> Post</button>
+        <button type="button" onclick="document.getElementById('createPostModal').classList.remove('active');">Cancel</button>
+      </div>
+    </form>
+  </div>
+
+  <main class="main-content">
+    <section class="query-feed" id="queryFeed">
+      <!-- POST TEMPLATE (hidden) -->
+      <article class="query-card" id="post-template" style="display: none;">
+        <button class="attachment-button" style="display: none;">
+          <i class="fas fa-paperclip"></i> View Attachment
+        </button>
+
+        <div class="post-content">
+          <h2 class="post-question">Question or Query Title</h2>
+          <p class="post-description">Description about the query...</p>
+          <div class="post-info">Posted by: User</div>
+        </div>
+
+        <div class="interaction-row">
+          <div class="like-button">
+            <input class="on" id="heart-template" type="checkbox" />
+            <label class="like" for="heart-template">
+              <svg class="like-icon" fill-rule="nonzero" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383-.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z"></path>
+              </svg>
+              <span class="like-text">Likes</span>
+            </label>
+            <span class="like-count one">0</span>
+            <span class="like-count two">1</span>
+          </div>
+
+          <button class="delete-post-btn" style="display:none;background:#d32f2f;color:white;border:none;margin-left:10px;padding:5px 10px;border-radius:3px;cursor:pointer;font-size:12px;">
+          <i class="fas fa-trash"></i> Delete
+          </button>
+          
+          <!-- ASSIGN MENTOR BUTTON (Admin only) -->
+          <button class="assign-mentor-btn" style="display:none;background:#ff9800;margin-left:10px;font-size:12px;padding:5px 10px;border:none;color:white;border-radius:3px;cursor:pointer;">
+            <i class="fas fa-user-tie"></i> Assign Mentor
+          </button>
+          <select class="mentor-select" style="margin-left:5px;padding:5px;border-radius:3px;display:none;">
+            <option value="">Select Mentor</option>
+          </select>
+        
+
+          <a href="#" class="comment-link" style="color:#aaa;text-decoration:none;display:flex;align-items:center;gap:5px;cursor:pointer;flex-direction:row;">
+          <i class="fas fa-comment"></i>
+          <span class="comment-count">0</span>
+          </a>
+            <div class="comment-section">
+              <input type="text" placeholder="Write a comment..." />
+              <button class="post-btn">Post</button>
+              <ul class="comment-list"></ul>
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    
+
+    <!-- FLOATING CREATE POST BUTTON -->
+    <button class="create-post-btn" id="createPostBtn" title="Create a new post">
+      <i class="fas fa-plus"></i>
+    </button>
+  </main>
+
+  <script>
+    // Mobile menu toggle
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    const headerRightGroup = document.getElementById('headerRightGroup');
+    const menuOverlay = document.getElementById('menuOverlay');
+
+    mobileMenuToggle.addEventListener('click', function () {
+      headerRightGroup.classList.toggle('active');
+      menuOverlay.classList.toggle('active');
+
+      const icon = this.querySelector('i');
+      if (headerRightGroup.classList.contains('active')) {
+        icon.classList.remove('fa-bars');
+        icon.classList.add('fa-times');
+      } else {
+        icon.classList.remove('fa-times');
+        icon.classList.add('fa-bars');
+      }
+    });
+
+    menuOverlay.addEventListener('click', function () {
+      headerRightGroup.classList.remove('active');
+      menuOverlay.classList.remove('active');
+      const icon = mobileMenuToggle.querySelector('i');
+      icon.classList.remove('fa-times');
+      icon.classList.add('fa-bars');
+    });
+
+    headerRightGroup.addEventListener('click', function (e) {
+      if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A') {
+        headerRightGroup.classList.remove('active');
+        menuOverlay.classList.remove('active');
+        const icon = mobileMenuToggle.querySelector('i');
+        icon.classList.remove('fa-times');
+        icon.classList.add('fa-bars');
+      }
+    });
+
+    // Create post modal
+    const createPostBtn = document.getElementById('createPostBtn');
+    const createPostModal = document.getElementById('createPostModal');
+    const createPostForm = document.getElementById('createPostForm');
+
+    createPostBtn.addEventListener('click', () => {
+      const userEmail = localStorage.getItem('userEmail');
+      if (!userEmail) {
+        alert('You must be logged in to create a post');
+        window.location.href = 'login.html';
+        return;
+      }
+      createPostModal.classList.add('active');
+    });
+
+    // Close modal on background click
+    createPostModal.addEventListener('click', (e) => {
+      if (e.target === createPostModal) {
+        createPostModal.classList.remove('active');
+      }
+    });
+    
+  </script>
+
+  <script src="auth.js"></script>
+  <script src="create.js"></script>
+</body>
+</html>

@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Comments – ArbiterQ</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    background-image: url(mainbg.jpg);
+    background-size: cover;
+    background-attachment: fixed;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    background-color: #232323;
+  }
+
+  .headerMenu {
+    position: fixed;
+    z-index: 10;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 20px;
+    color: #fff;
+    background-color: #69696900;
+    backdrop-filter: blur(2px);
+    flex-wrap: wrap;
+  }
+
+  .app-name {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0;
+    flex-shrink: 0;
+  }
+
+  .header-right-group {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+  }
+
+  .button-home,
+  .button-login,
+  .button-signup,
+  #logoutButton {
+    margin: 0;
+    background-color: #000000de;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 500;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    height: 40px;
+    padding: 0 15px;
+    cursor: pointer;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .mobile-menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 5px;
+  }
+
+  @media (max-width: 768px) {
+    .headerMenu {
+      padding: 10px 15px;
+    }
+
+    .app-name {
+      font-size: 20px;
+    }
+
+    .mobile-menu-toggle {
+      display: block;
+      order: 3;
+    }
+
+    .header-right-group {
+      display: none;
+      width: 100%;
+      order: 4;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+      margin-top: 10px;
+      background-color: rgba(0, 0, 0, 0.8);
+      padding: 15px;
+      border-radius: 8px;
+    }
+
+    .header-right-group.active {
+      display: flex;
+    }
+
+    .button-home,
+    .button-login,
+    .button-signup,
+    #logoutButton {
+      width: 100%;
+      height: 40px;
+      padding: 0 15px;
+      font-size: 14px;
+    }
+  }
+
+  .menu-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9;
+  }
+
+  .menu-overlay.active {
+    display: block;
+  }
+
+  main {
+    width: 100%;
+    padding: 20px;
+    margin-top: 80px;
+  }
+
+  .comments-container {
+    max-width: 700px;
+    margin: 0 auto;
+    background: rgba(45, 45, 45, 0.95);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #444;
+    color: #eee;
+  }
+
+  .post-header {
+    padding: 20px;
+    border-bottom: 1px solid #444;
+    background-color: #2a2a2a;
+  }
+
+  .post-title {
+    margin: 0 0 10px 0;
+    color: #1e88e5;
+    font-size: 20px;
+  }
+
+  .post-meta {
+    font-size: 12px;
+    color: #aaa;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+  }
+
+  .admin-section {
+    padding: 15px 20px;
+    background-color: #1a1a1a;
+    border-bottom: 1px solid #444;
+    display: none;
+  }
+
+  .admin-section.visible {
+    display: block;
+  }
+
+  .admin-section label {
+    display: block;
+    color: #acd9ff;
+    font-weight: bold;
+    margin-bottom: 8px;
+    font-size: 14px;
+  }
+
+  .mentor-select {
+    width: 100%;
+    padding: 10px;
+    background-color: #333;
+    color: #eee;
+    border: 1px solid #555;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  .mentor-select:focus {
+    outline: none;
+    border-color: #1e88e5;
+    box-shadow: 0 0 5px rgba(30, 136, 229, 0.3);
+  }
+
+  .mentor-select option {
+    background-color: #333;
+    color: #eee;
+  }
+
+  .assign-btn {
+    margin-top: 10px;
+    background-color: #1e88e5;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    width: 100%;
+  }
+
+  .assign-btn:hover {
+    background-color: #1565c0;
+  }
+
+  .comments-list {
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 20px;
+  }
+
+  .comment {
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #444;
+  }
+
+  .comment:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .comment-author {
+    font-weight: bold;
+    color: #1e88e5;
+    font-size: 14px;
+  }
+
+  .comment-time {
+    font-size: 12px;
+    color: #aaa;
+  }
+
+  .comment-text {
+    color: #ddd;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .no-comments {
+    text-align: center;
+    color: #aaa;
+    padding: 30px 20px;
+  }
+
+  .comment-input-section {
+    padding: 20px;
+    border-top: 1px solid #444;
+    background-color: #2a2a2a;
+  }
+
+  .input-wrapper {
+    display: flex;
+    gap: 10px;
+  }
+
+  .comment-input {
+    flex: 1;
+    padding: 10px;
+    background-color: #222;
+    color: #fff;
+    border: 1px solid #555;
+    border-radius: 5px;
+    font-size: 14px;
+  }
+
+  .comment-input:focus {
+    outline: none;
+    border-color: #1e88e5;
+  }
+
+  .post-comment-btn {
+    background-color: #1e88e5;
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    white-space: nowrap;
+  }
+
+  .post-comment-btn:hover {
+    background-color: #1565c0;
+  }
+
+  .post-comment-btn:disabled {
+    background-color: #666;
+    cursor: not-allowed;
+  }
+
+  .back-button {
+    margin-bottom: 15px;
+  }
+
+  .back-button a {
+    color: #1e88e5;
+    text-decoration: none;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .back-button a:hover {
+    text-decoration: underline;
+  }
+
+  .success-message {
+    background-color: #226422;
+    color: #dfffcf;
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    display: none;
+  }
+
+  .success-message.show {
+    display: block;
+  }
+
+  .error-message {
+    background-color: #8b0000;
+    color: #ffcccc;
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    display: none;
+  }
+
+  .error-message.show {
+    display: block;
+  }
+
+  @media (max-width: 600px) {
+    main {
+      padding: 10px;
+      margin-top: 70px;
+    }
+
+    .comments-container {
+      border-radius: 8px;
+    }
+
+    .post-header {
+      padding: 15px;
+    }
+
+    .post-title {
+      font-size: 18px;
+    }
+
+    .input-wrapper {
+      flex-direction: column;
+    }
+
+    .post-comment-btn {
+      width: 100%;
+    }
+
+    .comments-list {
+      max-height: 300px;
+    }
+  }
+</style>
+<body>
+  <div class="menu-overlay" id="menuOverlay"></div>
+
+  <div class="headerMenu">
+    <h2 class="app-name">ArbiterQ</h2>
+
+    <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+      <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="header-right-group" id="headerRightGroup">
+      <button class="button-home" onclick="location.href='Main.html'">
+        Home
+      </button>
+      <button class="button-login" onclick="location.href='aboutus.html'">
+        About us
+      </button>
+
+      <div id="userInfo" style="display: none; align-items: center; gap: 15px;">
+        <span id="welcomeMessage" style="color: white; font-weight: bold; font-size: 14px;"></span>
+        <a href="profile.html" class="button-home">My Profile</a>
+        <button id="logoutButton" class="button-login">Logout</button>
+      </div>
+
+      <div id="guestInfo" style="display: flex; align-items: center; gap: 15px;">
+        <button class="button-login" onclick="location.href='login.html'">Login</button>
+        <button class="button-signup" onclick="location.href='signup.html'">Sign Up</button>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <div class="back-button">
+      <a href="Main.html"><i class="fas fa-arrow-left"></i> Back to Posts</a>
+    </div>
+
+    <div class="comments-container">
+      <div class="post-header">
+        <h2 class="post-title" id="postTitle">Loading...</h2>
+        <div class="post-meta">
+          <span>By <strong id="postAuthor">Unknown</strong></span>
+          <span id="postDate"></span>
+        </div>
+      </div>
+
+      <!-- ADMIN SECTION FOR ASSIGNING MENTOR -->
+      <div class="admin-section" id="adminSection">
+        <label for="mentorSelect">
+          <i class="fas fa-user-shield"></i> Assign Mentor to This Post
+        </label>
+        <select id="mentorSelect" class="mentor-select">
+          <option value="">-- Select a Mentor --</option>
+        </select>
+        <button class="assign-btn" id="assignMentorBtn">Assign Mentor</button>
+      </div>
+
+      <div class="comments-list" id="commentsList">
+        <div class="no-comments">Loading comments...</div>
+      </div>
+
+      <div class="comment-input-section">
+        <div class="success-message" id="successMessage">Comment posted successfully!</div>
+        <div class="error-message" id="errorMessage"></div>
+        
+        <div class="input-wrapper">
+          <input
+            type="text"
+            id="commentInput"
+            class="comment-input"
+            placeholder="Write a comment..."
+            maxlength="500"
+          />
+          <button class="post-comment-btn" id="postCommentBtn">Post</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Mobile menu toggle
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    const headerRightGroup = document.getElementById('headerRightGroup');
+    const menuOverlay = document.getElementById('menuOverlay');
+
+    mobileMenuToggle.addEventListener('click', function () {
+      headerRightGroup.classList.toggle('active');
+      menuOverlay.classList.toggle('active');
+      const icon = this.querySelector('i');
+      if (headerRightGroup.classList.contains('active')) {
+        icon.classList.remove('fa-bars');
+        icon.classList.add('fa-times');
+      } else {
+        icon.classList.remove('fa-times');
+        icon.classList.add('fa-bars');
+      }
+    });
+
+    menuOverlay.addEventListener('click', function () {
+      headerRightGroup.classList.remove('active');
+      menuOverlay.classList.remove('active');
+      const icon = mobileMenuToggle.querySelector('i');
+      icon.classList.remove('fa-times');
+      icon.classList.add('fa-bars');
+    });
+
+    headerRightGroup.addEventListener('click', function (e) {
+      if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A') {
+        headerRightGroup.classList.remove('active');
+        menuOverlay.classList.remove('active');
+        const icon = mobileMenuToggle.querySelector('i');
+        icon.classList.remove('fa-times');
+        icon.classList.add('fa-bars');
+      }
+    });
+
+    const API_BASE_URL = 'http://127.0.0.1:5000';
+
+const urlParams = new URLSearchParams(window.location.search);
+const postId = urlParams.get('post_id');
+
+console.log('Post ID from URL:', postId);
+
+if (!postId) {
+  document.getElementById('postTitle').textContent = 'Error';
+  document.getElementById('commentsList').innerHTML = '<div class="no-comments">No post specified. <a href="Main.html">Go back</a></div>';
+}
+
+async function loadPost() {
+  try {
+    console.log('Loading post details...');
+    const response = await fetch(`${API_BASE_URL}/api/posts/${postId}`);
+    
+    if (!response.ok) {
+      throw new Error(`Failed to load post: ${response.status}`);
+    }
+
+    const post = await response.json();
+    console.log('Post loaded:', post);
+    
+    document.getElementById('postTitle').textContent = post.topic;
+    document.getElementById('postAuthor').textContent = post.username || 'Anonymous';
+    
+    if (post.created_at) {
+      const date = new Date(post.created_at).toLocaleDateString();
+      document.getElementById('postDate').textContent = date;
+    }
+
+    const userRole = localStorage.getItem('userRole');
+    if (userRole === 'Admin') {
+      document.getElementById('adminSection').classList.add('visible');
+      loadMentorsList();
+    }
+    
+  } catch (error) {
+    console.error('Error loading post:', error);
+    document.getElementById('postTitle').textContent = 'Error Loading Post';
+  }
+}
+
+async function loadComments() {
+  try {
+    console.log('Loading comments for post:', postId);
+    
+    const response = await fetch(`${API_BASE_URL}/api/posts/${postId}/comments`);
+    
+    console.log('Comments response status:', response.status);
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Comments error response:', errorText);
+      throw new Error(`Failed to load comments: ${response.status}`);
+    }
+
+    const comments = await response.json();
+    console.log('Comments loaded:', comments);
+    
+    const commentsList = document.getElementById('commentsList');
+
+    if (!comments || comments.length === 0) {
+      commentsList.innerHTML = '<div class="no-comments">No comments yet. Be the first to comment!</div>';
+      return;
+    }
+
+    commentsList.innerHTML = comments.map(comment => {
+      const date = comment.created_at ? new Date(comment.created_at).toLocaleString() : 'Unknown date';
+      const username = comment.username || 'Anonymous';
+      const text = comment.text || '';
+      
+      return `
+        <div class="comment">
+          <div class="comment-header">
+            <span class="comment-author">${username}</span>
+            <span class="comment-time">${date}</span>
+          </div>
+          <div class="comment-text">${text}</div>
+        </div>
+      `;
+    }).join('');
+    
+  } catch (error) {
+    console.error('Error loading comments:', error);
+    document.getElementById('commentsList').innerHTML = `
+      <div class="no-comments" style="color: #f44336;">
+        Error: ${error.message}
+      </div>
+    `;
+  }
+}
+
+async function loadMentorsList() {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/mentors`);
+    if (!response.ok) throw new Error('Failed to load mentors');
+
+    const mentors = await response.json();
+    const select = document.getElementById('mentorSelect');
+
+    mentors.forEach(mentor => {
+      const option = document.createElement('option');
+      option.value = mentor.UID;
+      option.textContent = mentor.username;
+      select.appendChild(option);
+    });
+  } catch (error) {
+    console.error('Error loading mentors:', error);
+  }
+}
+
+const postCommentBtn = document.getElementById('postCommentBtn');
+if (postCommentBtn) {
+  postCommentBtn.addEventListener('click', async () => {
+    const commentText = document.getElementById('commentInput').value.trim();
+
+    if (!commentText) {
+      showError('Please write a comment');
+      return;
+    }
+
+    const userEmail = localStorage.getItem('userEmail');
+    console.log('User email from localStorage:', userEmail);
+    
+    if (!userEmail) {
+      showError('You must be logged in to comment');
+      setTimeout(() => {
+        window.location.href = 'login.html';
+      }, 1500);
+      return;
+    }
+
+    const btn = document.getElementById('postCommentBtn');
+    btn.disabled = true;
+    btn.textContent = 'Posting...';
+
+    try {
+      console.log('Posting comment:', { text: commentText, user_email: userEmail });
+      
+      const response = await fetch(`${API_BASE_URL}/api/posts/${postId}/comments`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          text: commentText,
+          user_email: userEmail
+        })
+      });
+
+      console.log('Post comment response status:', response.status);
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Post comment error:', errorData);
+        throw new Error(errorData.error || 'Failed to post comment');
+      }
+
+      const result = await response.json();
+      console.log('Comment posted successfully:', result);
+
+      document.getElementById('commentInput').value = '';
+      showSuccess('Comment posted!');
+      
+      setTimeout(() => {
+        loadComments();
+      }, 500);
+      
+    } catch (error) {
+      console.error('Error posting comment:', error);
+      showError(`Could not post comment: ${error.message}`);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Post';
+    }
+  });
+}
+
+const assignMentorBtn = document.getElementById('assignMentorBtn');
+if (assignMentorBtn) {
+  assignMentorBtn.addEventListener('click', async () => {
+    const mentorId = document.getElementById('mentorSelect').value;
+
+    if (!mentorId) {
+      showError('Please select a mentor');
+      return;
+    }
+
+    const btn = document.getElementById('assignMentorBtn');
+    btn.disabled = true;
+    btn.textContent = 'Assigning...';
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/posts/${postId}/assign-mentor`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mentor_id: mentorId })
+      });
+
+      if (!response.ok) throw new Error('Failed to assign mentor');
+
+      showSuccess('Mentor assigned successfully!');
+    } catch (error) {
+      console.error('Error assigning mentor:', error);
+      showError('Could not assign mentor');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Assign Mentor';
+    }
+  });
+}
+
+function showSuccess(message) {
+  const msg = document.getElementById('successMessage');
+  msg.textContent = message;
+  msg.classList.add('show');
+  setTimeout(() => msg.classList.remove('show'), 3000);
+}
+
+function showError(message) {
+  const msg = document.getElementById('errorMessage');
+  msg.textContent = message;
+  msg.classList.add('show');
+  setTimeout(() => msg.classList.remove('show'), 3000);
+}
+
+if (postId) {
+  loadPost();
+  loadComments();
+}
+
+  </script>
+  <script src="auth.js"></script>
+</body>
+</html>

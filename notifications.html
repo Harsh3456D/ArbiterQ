@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Notifications – ArbiterQ</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    background-image: url(mainbg.jpg);
+    background-size: cover;
+    background-attachment: fixed;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    background-color: #232323;
+  }
+
+  .headerMenu {
+    position: fixed;
+    z-index: 10;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 20px;
+    color: #fff;
+    background-color: #69696900;
+    backdrop-filter: blur(2px);
+    flex-wrap: wrap;
+  }
+
+  .app-name {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0;
+    flex-shrink: 0;
+  }
+
+  .header-right-group {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .button-home,
+  .button-login,
+  #logoutButton {
+    margin: 0;
+    background-color: #000000de;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 500;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    height: 40px;
+    padding: 0 15px;
+    cursor: pointer;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .mobile-menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 5px;
+  }
+
+  @media (max-width: 768px) {
+    .mobile-menu-toggle {
+      display: block;
+    }
+
+    .header-right-group {
+      display: none;
+    }
+
+    .header-right-group.active {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      gap: 10px;
+      margin-top: 10px;
+    }
+  }
+
+  main {
+    width: 100%;
+    padding: 20px;
+    margin-top: 80px;
+  }
+
+  .notifications-container {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .notifications-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    color: #eee;
+  }
+
+  .notifications-header h1 {
+    margin: 0;
+    font-size: 28px;
+    color: #e51e1eec;
+  }
+
+  .notification-item {
+    background: rgba(31, 31, 31, 0.95);
+    border-radius: 8px;
+    border-left: 4px solid #e51e1e;
+    padding: 15px;
+    margin-bottom: 10px;
+    color: #eee;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .notification-item:hover {
+    background: rgba(50, 50, 50, 0.98);
+    transform: translateX(5px);
+  }
+
+  .notification-item.unread {
+    background: rgba(30, 136, 229, 0.15);
+    border-left-color: #f66464;
+  }
+
+  .notification-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 8px;
+  }
+
+  .notification-title {
+    font-weight: bold;
+    font-size: 16px;
+    color: #ff2323;
+  }
+
+  .notification-time {
+    font-size: 12px;
+    color: #aaa;
+  }
+
+  .notification-message {
+    color: #ccc;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 8px;
+  }
+
+  .notification-from {
+    font-size: 12px;
+    color: #999;
+  }
+
+  .notification-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  .mark-read-btn {
+    background-color: #e51e1e;
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+
+  .mark-read-btn:hover {
+    background-color: #c01515;
+  }
+
+  .delete-btn {
+    background-color: #d32f2f;
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+
+  .delete-btn:hover {
+    background-color: #c62828;
+  }
+
+  .no-notifications {
+    text-align: center;
+    color: #aaa;
+    padding: 40px 20px;
+    background: rgba(45, 45, 45, 0.95);
+    border-radius: 8px;
+  }
+
+  .no-notifications i {
+    font-size: 48px;
+    color: #666;
+    margin-bottom: 15px;
+    display: block;
+  }
+
+  .back-button {
+    margin-bottom: 15px;
+  }
+
+  .back-button a {
+    color: #fcfcfc;
+    text-decoration: none;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .back-button a:hover {
+    text-decoration: underline;
+  }
+
+  .menu-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9;
+  }
+
+  .menu-overlay.active {
+    display: block;
+  }
+
+  @media (max-width: 600px) {
+    main {
+      padding: 10px;
+    }
+
+    .notifications-container {
+      width: 100%;
+    }
+
+    .notification-item {
+      padding: 12px;
+    }
+  }
+
+  #video-wallpaper {
+       position: fixed;
+       top: 0;
+       left: 0;
+       width: 100%;
+       height: 100%;
+       object-fit: cover; 
+       z-index: -1;    
+}
+
+
+
+</style>
+<body>
+
+  <video autoplay loop muted playsinline id="video-wallpaper">
+    <source src="https://res.cloudinary.com/dccijkwes/video/upload/v1762029379/notificationbg_wcgzhp.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+
+
+  <div class="menu-overlay" id="menuOverlay"></div>
+
+  <div class="headerMenu">
+    <h2 class="app-name">ArbiterQ</h2>
+
+    <button class="mobile-menu-toggle" id="mobileMenuToggle">
+      <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="header-right-group" id="headerRightGroup">
+      <button class="button-home" onclick="location.href='Main.html'">
+        Home
+      </button>
+      <button onclick="window.location.href='profile.html'" class="button-home">My Profile</a>
+      <button id="logoutButton" class="button-login">Logout</button>
+    </div>
+  </div>
+
+  <main>
+    <div class="back-button">
+      <a href="Main.html"><i class="fas fa-arrow-left"></i> Back to Posts</a>
+    </div>
+
+    <div class="notifications-container">
+      <div class="notifications-header">
+        <h1><i class="fas fa-bell"></i> Notifications</h1>
+        <span id="unreadCount" style="background:#e51e1e;padding:5px 10px;border-radius:20px;font-size:12px;font-weight:bold;">0</span>
+      </div>
+
+      <div id="notificationsList">
+        <div class="no-notifications">
+          <i class="fas fa-inbox"></i>
+          <p>No notifications yet</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const userEmail = localStorage.getItem('userEmail');
+
+    if (!userEmail) {
+      window.location.href = 'login.html';
+    }
+
+    // Mobile menu
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    const headerRightGroup = document.getElementById('headerRightGroup');
+    const menuOverlay = document.getElementById('menuOverlay');
+
+    mobileMenuToggle?.addEventListener('click', () => {
+      headerRightGroup.classList.toggle('active');
+      menuOverlay.classList.toggle('active');
+    });
+
+    menuOverlay?.addEventListener('click', () => {
+      headerRightGroup.classList.remove('active');
+      menuOverlay.classList.remove('active');
+    });
+
+    // Load notifications
+    async function loadNotifications() {
+      try {
+        const response = await fetch(`http://127.0.0.1:5000/api/notifications?user_email=${userEmail}`);
+        if (!response.ok) throw new Error('Failed to load notifications');
+
+        const notifications = await response.json();
+        const container = document.getElementById('notificationsList');
+
+        if (notifications.length === 0) {
+          container.innerHTML = `
+            <div class="no-notifications">
+              <i class="fas fa-inbox"></i>
+              <p>No notifications yet</p>
+            </div>
+          `;
+          document.getElementById('unreadCount').textContent = '0';
+          return;
+        }
+
+        const unreadCount = notifications.filter(n => !n.is_read).length;
+        document.getElementById('unreadCount').textContent = unreadCount;
+
+        container.innerHTML = notifications.map(notification => `
+          <div class="notification-item ${notification.is_read ? '' : 'unread'}" data-id="${notification.id}">
+            <div class="notification-header">
+              <div class="notification-title">${notification.title}</div>
+              <div class="notification-time">${new Date(notification.created_at).toLocaleDateString()}</div>
+            </div>
+            <div class="notification-message">${notification.message}</div>
+            <div class="notification-from">From: <strong>${notification.from_user}</strong></div>
+            <div class="notification-actions">
+              ${!notification.is_read ? `<button class="mark-read-btn" onclick="markAsRead(${notification.id})">Mark as Read</button>` : ''}
+              <button class="delete-btn" onclick="deleteNotification(${notification.id})">Delete</button>
+            </div>
+          </div>
+        `).join('');
+      } catch (error) {
+        console.error('Error loading notifications:', error);
+      }
+    }
+
+    async function markAsRead(notificationId) {
+      try {
+        const response = await fetch(`http://127.0.0.1:5000/api/notifications/${notificationId}/read`, {
+          method: 'POST'
+        });
+
+        if (response.ok) {
+          loadNotifications();
+        }
+      } catch (error) {
+        console.error('Error marking as read:', error);
+      }
+    }
+
+    function deleteNotification(notificationId) {
+      const item = document.querySelector(`[data-id="${notificationId}"]`);
+      if (item) {
+        item.remove();
+      }
+    }
+
+    // Load on page load
+    loadNotifications();
+
+    // Refresh every 10 seconds
+    setInterval(loadNotifications, 10000);
+  </script>
+
+  <script src="auth.js"></script>
+</body>
+</html>

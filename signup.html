@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+</head>
+<style>
+    .backgrond {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        object-fit: cover;
+    }
+    .signup-form {
+        position: relative;
+        margin: 100px auto;
+        padding: 20px;
+        width: 300px;
+        background-color: rgba(255, 255, 255, 0.534);
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .button-submit {
+        margin: 20px 0 10px 0;
+        background-color: #000000de;
+        color: rgb(255, 255, 255);
+        font-size: 15px;
+        font-weight: 500;
+        border: 1px solid #000000;
+        border-radius: 5px;
+        height: 50px;
+        width: 100%;
+        cursor: pointer;
+    }
+    .button-submit:hover {
+        margin: 20px 0 10px 0;
+        background-color: #000000;
+        transition: 0.4s ease-in-out;
+        color: rgb(255, 255, 255);
+        font-size: 15px;
+        font-weight: 500;
+        border: 1px solid #000000;
+        border-radius: 5px;
+        height: 50px;
+        width: 100%;
+        cursor: pointer;
+        transform: scale(1.01);
+    }
+
+    .button-login {
+        margin: 20px 0 10px 0;
+        background-color: #000000de;
+        color: #ffffff;
+        font-size: 15px;
+        font-weight: 500;
+        border: 1px solid #000000;
+        border-radius: 5px;
+        height: 50px;
+        width: 100%;
+        cursor: pointer;
+    }
+    .button-login:hover {
+        margin: 20px 0 10px 0;
+        background-color: #000000;
+        color: #ffffff;
+        font-size: 15px;
+        font-weight: 500;
+        border: 1px solid #000000;
+        border-radius: 5px;
+        height: 50px;
+        width: 100%;
+        cursor: pointer;
+        transform: scale(1.01);
+    }
+
+    .heading1 {
+        justify-self: center;
+        font-weight: 700;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin-bottom: 20px;
+        font-style: bold;
+    }
+    .heading2 {
+        justify-self: center;
+        margin-top: -10px;
+        margin-bottom: 20px;
+        font-weight: 400;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-style:normal;
+        
+    }
+    .heading5 {
+        text-align: center;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        font-weight: 400;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-style: italic;
+    }
+    .Form-box {
+        width: 92%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 14px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .app-name {
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        left: 10px;
+        margin: 20px;
+        font-size: 24px;
+        font-weight: bold;
+        color: #ffffff;
+    }
+
+    footer {
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        text-align: center;
+        bottom: 10px;
+        font-size: 14px;
+        color: #ffffff;
+    }
+    
+</style>
+<body>
+    <h2 class="app-name">ArbiterQ</h2>
+    <img src="background.jpg" alt="Background" class="backgrond"/>
+    <div class="signup-form">
+        <h1 class="heading1">Sign Up</h1>
+        <h3 class="heading2">Please fill out your details</h3>
+        <form id="signupForm">
+            <input class="Form-box" type="text" id="username" name="username" placeholder="Enter your Username" required><br><br>
+            <input class="Form-box" type="email" id="email" name="email" placeholder="Enter your email" required><br><br>
+            <input class="Form-box" type="password" id="password" name="password" placeholder="Enter your password" required><br><br>
+            <input type="submit" value="Sign Up" class="button-submit"><hr>
+            <h5 class="heading5"> OR </h5>
+            <!-- Google's official sign-in button -->
+            <div id="g_id_onload"
+            data-client_id="468561188665-su6pdv2s2ct5cai7rngs85voj27l6997.apps.googleusercontent.com"
+            data-callback="handleCredentialResponse">
+            </div>
+            <div class="g_id_signin" data-type="standard"></div>
+    <button type="button" class="button-login" onclick="window.location.href='login.html'">Login existing account</button>
+  </div>
+  
+        </form>
+        <footer>
+            2025 © ArbiterQ. All rights reserved.
+        </footer>
+<script src="auth.js"></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+</body>
+</html>
